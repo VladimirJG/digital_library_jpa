@@ -41,8 +41,8 @@ public class BookService {
     }
 
     @Transactional
-    public void deleteBook(Book book) {
-        bookRepository.delete(book);
+    public void deleteBook(int id) {
+        bookRepository.deleteById(id);
     }
 
     public Reader getBookOwnerById(int id) {
