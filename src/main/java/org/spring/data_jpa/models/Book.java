@@ -1,45 +1,53 @@
 package org.spring.data_jpa.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
 import java.util.Date;
 
 @Entity
-@Table(name = "Books")
+@Table(name = "Book")
 public class Book {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name = "book_name")
-    @NotEmpty(message = "Нименование не может быть пустым")
-    @Size(min = 1, max = 100, message = "Размер наименования книги должен находиться в диапазоне от 2 до 100")
-    private String bookName;
-    @Column(name = "book_author")
-    @NotEmpty(message = "Имя автора не может быть пустым")
-    @Size(min = 5, max = 100, message = "Диапазон имени от 50 до 100 символов")
+
+    @NotEmpty(message = "Название книги не должно быть пустым")
+    @Size(min = 2, max = 100, message = "Название книги должно быть от 2 до 100 символов длиной")
+    @Column(name = "title")
+    private String title;
+
+    @NotEmpty(message = "Автор не должен быть пустым")
+    @Size(min = 2, max = 100, message = "Имя автора должно быть от 2 до 100 символов длиной")
+    @Column(name = "author")
     private String author;
-    @Column(name = "year_of_released")
-    @NotEmpty(message = "Поле не должно быть пустым")
-    private int yearReleased;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reader_id", referencedColumnName = "id")
-    private Reader owner;
+
+    @Min(value = 1500, message = "Год должен быть больше, чем 1500")
+    @Column(name = "year")
+    private int year;
+
+    @ManyToOne
+    @JoinColumn(name = "person_id", referencedColumnName = "id")
+    private Person owner;
+
     @Column(name = "taken_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date takenAt;
+
     @Transient
-    private boolean expired;
+    private boolean expired; // Hibernate не будет замечать этого поля, что нам и нужно. По-умолчанию false.
 
     public Book() {
+
     }
 
-    public Book(String bookName, String author, int yearReleased) {
-        this.bookName = bookName;
+    public Book(String title, String author, int year) {
+        this.title = title;
         this.author = author;
-        this.yearReleased = yearReleased;
+        this.year = year;
     }
 
     public int getId() {
@@ -50,12 +58,12 @@ public class Book {
         this.id = id;
     }
 
-    public String getBookName() {
-        return bookName;
+    public String getTitle() {
+        return title;
     }
 
-    public void setBookName(String bookName) {
-        this.bookName = bookName;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getAuthor() {
@@ -66,19 +74,19 @@ public class Book {
         this.author = author;
     }
 
-    public int getYearReleased() {
-        return yearReleased;
+    public int getYear() {
+        return year;
     }
 
-    public void setYearReleased(int yearReleased) {
-        this.yearReleased = yearReleased;
+    public void setYear(int year) {
+        this.year = year;
     }
 
-    public Reader getOwner() {
+    public Person getOwner() {
         return owner;
     }
 
-    public void setOwner(Reader owner) {
+    public void setOwner(Person owner) {
         this.owner = owner;
     }
 
@@ -96,15 +104,5 @@ public class Book {
 
     public void setExpired(boolean expired) {
         this.expired = expired;
-    }
-
-    @Override
-    public String toString() {
-        return "Book{" +
-                "id=" + id +
-                ", bookName='" + bookName + '\'' +
-                ", author='" + author + '\'' +
-                ", yearReleased=" + yearReleased +
-                '}';
     }
 }
