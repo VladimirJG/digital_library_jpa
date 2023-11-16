@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Type" content="text/html" ; charset="UTF-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Читатель</title>
 </head>
 <body>
@@ -11,12 +11,18 @@
     <p>Читатель не взял еще не одной книги</p>
     <hr/>
 </div>
+
 <div th:if="${!allBooksOnOneReader.isEmpty()}">
     <hr/>
     <b>Книги</b>
     <br/>
     <table th:each="book:${allBooksOnOneReader}">
-        <tr th:text="${book.getBookName()+', '+ book.getAuthor()+', ' + book.getYearReleased()}">Книга</tr>
+        <tr>
+            <td>
+                <span th:text="${book.getBookName()+', '+ book.getAuthor()+', ' + book.getYearReleased()}"
+                      th:style="${book.isExpired()} ? 'color:red': 'color:black'">Книга</span>
+            </td>
+        </tr>
     </table>
     <hr/>
 </div>

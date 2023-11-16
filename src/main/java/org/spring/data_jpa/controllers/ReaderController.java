@@ -3,6 +3,7 @@ package org.spring.data_jpa.controllers;
 import jakarta.validation.Valid;
 import org.spring.data_jpa.models.Reader;
 import org.spring.data_jpa.services.ReaderService;
+import org.spring.data_jpa.util.ReaderValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,10 +15,13 @@ import org.springframework.web.bind.annotation.*;
 public class ReaderController {
 
     private final ReaderService readerService;
+    private final ReaderValidator readerValidator;
+
 
     @Autowired
-    public ReaderController(ReaderService readerService) {
+    public ReaderController(ReaderService readerService, ReaderValidator readerValidator) {
         this.readerService = readerService;
+        this.readerValidator = readerValidator;
     }
 
     @GetMapping
@@ -40,6 +44,7 @@ public class ReaderController {
 
     @PostMapping
     public String createReader(@ModelAttribute("createReader") @Valid Reader reader, BindingResult bindingResult) {
+        readerValidator.validate(reader, bindingResult);
         if (bindingResult.hasErrors()) {
             return "readers/newReader";
         }
@@ -56,6 +61,7 @@ public class ReaderController {
     @PatchMapping("/{id}")
     public String updateReader(@ModelAttribute("upReader") @Valid Reader upReader, BindingResult bindingResult,
                                @PathVariable("id") int id) {
+        readerValidator.validate(upReader, bindingResult);
         if (bindingResult.hasErrors()) {
             return "readers/editReader";
         }

@@ -1,5 +1,6 @@
 package org.spring.data_jpa.services;
 
+import org.hibernate.Hibernate;
 import org.spring.data_jpa.models.Book;
 import org.spring.data_jpa.models.Reader;
 import org.spring.data_jpa.repositories.ReaderRepository;
@@ -7,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,6 +49,22 @@ public class ReaderService {
     }
 
     public List<Book> getBooksByReaderId(int id) {
-        return findReaderById(id).getBookList();
+        Optional<Reader> reader = readerRepository.findById(id);
+        if (reader.isPresent()){
+            Hibernate.initialize(reader.get().getBookList());
+            reader.get().getBookList().forEach(book -> {
+                long diffInMillies = Math.abs(book.getTakenAt().getTime() - new Date().getTime());
+                if (diffInMillies>864000000)
+                    book.setExpired(true);
+            });
+            return reader.get().getBookList();
+        }
+        else {
+            return Collections.emptyList();
+        }
+    }
+
+    public Optional<Reader> findByName(String name) {
+        return readerRepository.findByName(name);
     }
 }
