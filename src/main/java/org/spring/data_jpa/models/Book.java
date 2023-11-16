@@ -13,7 +13,7 @@ public class Book {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name = "birth_reader")
+    @Column(name = "book_name")
     @NotEmpty(message = "Нименование не может быть пустым")
     @Size(min = 1, max = 100, message = "Размер наименования книги должен находиться в диапазоне от 2 до 100")
     private String bookName;

@@ -56,6 +56,7 @@ public class BookService {
 
     @Transactional
     public void saveBook(Book newBook) {
+        newBook.setTakenAt(new Date());
         bookRepository.save(newBook);
     }
 
